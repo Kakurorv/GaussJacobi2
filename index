@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Resolução de Sistema Linear de Equações com Gauss-Jacobi</title>
+</head>
+<body>
+    <h1>Resolução de Sistema Linear de Equações com Gauss-Jacobi</h1>
+
+    <form>
+        <label for="matrix-size">Tamanho da matriz:</label>
+        <input type="number" id="matrix-size" name="matrix-size" min="1" required><br><br>
+
+        <div id="matrix-container"></div>
+
+        <label for="initial-guess">Chute inicial:</label>
+        <input type="text" id="initial-guess" name="initial-guess" required><br><br>
+
+        <label for="precision">Precisão:</label>
+        <input type="number" id="precision" name="precision" step="0.0001" value="0.0001" required><br><br>
+
+        <label for="max-iterations">Número máximo de iterações:</label>
+        <input type="number" id="max-iterations" name="max-iterations" min="1" value="100" required><br><br>
+
+        <button type="submit">Resolver</button>
+    </form>
+
+    <div id="result-container"></div>
+
+    <script>
+        // Função para criar a interface de entrada de dados da matriz
+        function createMatrixInput(size) {
+            const container = document.getElementById("matrix-container");
+            container.innerHTML = "";
+            for (let i = 0; i < size; i++) {
+                const row = document.createElement("div");
+                row.classList.add("matrix-row");
+                for (let j = 0; j < size; j++) {
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.step = "any";
+                    input.required = true;
+                    input.name = `a${i}${j}`;
+                    row.appendChild(input);
+                }
+                const bInput = document.createElement("input");
+                bInput.type = "number";
+                bInput.step = "any";
+                bInput.required = true;
+                bInput.name = `b${i}`;
+                row.appendChild(bInput);
+                container.appendChild(row);
+            }
+        }
+
+        // Função para ler os dados da matriz do formulário e executar o método de Gauss-Jacobi
+        function solve() {
+            event.preventDefault();
+            const size = parseInt(document.getElementById("matrix-size").value);
+            const A = [];
+            const b = [];
+            for (let i = 0; i < size; i++) {
+                const row = [];
+                for (let j = 0; j < size; j++) {
+                    const input = document.querySelector(`input[name="a${i}${j}"]`);
+                    row.push(parseFloat(input.value));
+                }
+                const bInput = document.querySelector(`input[name="b${i}"]`);
+                b.push(parseFloat(bInput.value));
+                A.push(row);
+            }
+            const precision = parseFloat(document.getElementById("precision").value);
+            const maxIterations = parseInt(document.getElementById("max-iterations").value);
+
+            // Leia o chute inicial do formulário
+            const initialGuessInput = document.getElementById("initial-guess").value;
+            const initialGuess = initialGuessInput.split(',').map(x => parseFloat(x));
+
+            // Verifique se o tamanho do chute inicial corresponde ao tamanho da matriz
+            if (initialGuess.length !== size) {
+                alert('O tamanho do chute inicial deve corresponder ao tamanho da matriz.');
+                return;
+            }
+
+            // Atualize a atribuição
+            // Executar o método de Gauss-Jacobi
+            let x = initialGuess;
+            let iteration = 0;
+            let error = Infinity;
+            while (error > precision && iteration < maxIterations) {
+                let x_new = new Array(size).fill(0);
+                for (let i = 0; i < size; i++) {
+                    let sum = 0;
+                    for (let j = 0; j < size; j++) {
+                        sum += A[i][j] * x[j];
+                    }
+                    x_new[i] = (b[i] - sum + A[i][i] * x[i]) / A[i][i];
+                }
+                error = Math.max(...x_new.map((xi, i) => Math.abs(xi - x[i])));
+                x = x_new;
+                iteration++;
+            }
+            // Mostrar o resultado na página
+            const resultContainer = document.getElementById("result-container");
+            if (iteration >= maxIterations) {
+                resultContainer.textContent = "Não foi possível encontrar uma solução dentro do número máximo de iterações.";
+            } else {
+                const solution = x.map((xi, i) => `x${i + 1} = ${xi.toFixed(4)}`).join("<br>");
+                resultContainer.innerHTML = `Solução encontrada após ${iteration} iterações:<br>${solution}`;
+            }
+        }
+
+        // Associar a função createMatrixInput ao evento de alteração do tamanho da matriz
+        const matrixSizeInput = document.getElementById("matrix-size");
+        matrixSizeInput.addEventListener("input", () => createMatrixInput(matrixSizeInput.value));
+
+        // Associar a função solve ao evento de envio do formulário
+        const form = document.querySelector("form");
+        form.addEventListener("submit", solve);
+
+        // Criar a interface de entrada de dados inicial
+        createMatrixInput(2);
+    </script>
+</body>
+</html>
