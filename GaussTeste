@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Resolução de Sistema Linear de Equações com Gauss-Jacobi</title>
+</head>
+<style>
+  // Estilos removidos para economizar espaço. Você pode usar os mesmos estilos fornecidos anteriormente.
+</style>
+<body>
+    <h1>Resolução de Sistema Linear de Equações com Gauss-Jacobi</h1>
+
+    <form>
+        <label for="matrix-size">Tamanho da matriz:</label>
+        <input type="number" id="matrix-size" name="matrix-size" min="1" required><br><br>
+
+        <div id="matrix-container"></div>
+
+        <label for="initial-guess">Chute inicial:</label>
+        <input type="text" id="initial-guess" name="initial-guess" required><br><br>
+
+        <label for="precision">Precisão:</label>
+        <input type="number" id="precision" name="precision" step="0.0001" value="0.0001" required><br><br>
+
+        <label for="max-iterations">Número máximo de iterações:</label>
+        <input type="number" id="max-iterations" name="max-iterations" min="1" value="100" required><br><br>
+
+        <button type="submit">Resolver</button>
+    </form>
+
+    <div id="result-container"></div>
+
+    <script>
+        // Funções createMatrixInput e solve permanecem as mesmas até a leitura dos dados do formulário
+
+        // Leia o chute inicial do formulário
+        const initialGuessInput = document.getElementById("initial-guess").value;
+        const initialGuess = initialGuessInput.split(',').map(x => parseFloat(x));
+
+        // Verifique se o tamanho do chute inicial corresponde ao tamanho da matriz
+        if (initialGuess.length !== size) {
+          alert('O tamanho do chute inicial deve corresponder ao tamanho da matriz.');
+          return;
+        }
+
+        // Atualize a atribuição de x para usar o chute inicial fornecido
+        let x = initialGuess;
+
+        // O restante do algoritmo permanece o mesmo
+
+        // Associar a função createMatrixInput ao evento de alteração do tamanho da matriz
+        // ...
+        // Associar a função solve ao evento de envio do formulário
+        // ...
+
+        // Criar a interface de entrada de dados inicial
+        createMatrixInput(2);
+    </script>
+</body>
+</html>
